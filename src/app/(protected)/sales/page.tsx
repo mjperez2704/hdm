@@ -14,10 +14,9 @@ export default async function SalesAndQuotesPage() {
     return (
       <Tabs defaultValue="quotes">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="quotes">Presupuestos</TabsTrigger>
-          <TabsTrigger value="sales">Ventas</TabsTrigger>
+
         </TabsList>
-        <TabsContent value="quotes">
+          <TabsContent value="quotes">
           <QuotesManager
               clients={clients}
               initialQuotes={quotes}
@@ -27,10 +26,10 @@ export default async function SalesAndQuotesPage() {
         <TabsContent value="sales">
           <SalesAndQuotesClient
               clients={clients}
-              initialSales={sales}
               initialQuotes={quotes}
               products={products}
               coordenadas={coordenadas}
+              initialSales={sales}
           />
 
         </TabsContent>
