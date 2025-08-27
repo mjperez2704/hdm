@@ -7,8 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import type { Marca } from "@/lib/types";
-import { saveBrand } from "@/lib/actions";
-import { brandSchema, type BrandFormValues } from "@/lib/schemas";
+import { saveMarcas } from "@/lib/actions";
+import { brandSchema, type BrandFormValues } from "@/lib/schemas_ant";
 
 
 import {
@@ -63,7 +63,7 @@ export function BrandFormModal({
 
   const handleSubmit = async (values: BrandFormValues) => {
     setIsSubmitting(true);
-    const result = await saveBrand(values, brand?.id);
+    const result = await saveMarcas({ ...values, id: brand?.id ?? 0, created_at: new Date(), updated_at: new Date() }, brand?.id);
     setIsSubmitting(false);
 
     if (result.success) {

@@ -1,7 +1,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { QuotesManager } from "@/components/quotes-manager";
-import { getVentas, getClientes, getProductos, getCoordenadas, getPresupuestos } from "@/lib/data";
+import { getVentas, getClientes, getProductos, getCoordenada, getPresupuestos } from "@/lib/data";
 import { SalesAndQuotesClient } from "@/components/sales-and-quotes-client";
 
 export default async function SalesAndQuotesPage() {
@@ -9,7 +9,7 @@ export default async function SalesAndQuotesPage() {
     const sales = await getVentas();
     const products = await getProductos();
     const quotes = await getPresupuestos();
-    const coordenadas = await getCoordenadas();
+    const coordenadas = await getCoordenada();
 
     return (
       <Tabs defaultValue="quotes">

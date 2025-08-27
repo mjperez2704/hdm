@@ -40,7 +40,7 @@ export function WarehouseManager({ initialData, coordenadas }: WarehouseManagerP
   const [selectedSection, setSelectedSection] = React.useState<Seccion | null>(null);
   const [parentWarehouseId, setParentWarehouseId] = React.useState<number | null>(null);
 
-  const getCoordenadasForSection = (sectionId: number) => {
+  const getCoordenadaForSection = (sectionId: number) => {
       return coordenadas.filter(c => c.seccion_id === sectionId);
   }
 
@@ -100,7 +100,7 @@ export function WarehouseManager({ initialData, coordenadas }: WarehouseManagerP
               <Accordion type="single" collapsible className="w-full">
                 {warehouse.secciones &&
                   warehouse.secciones.map((section) => {
-                    const sectionCoordenadas = getCoordenadasForSection(section.id);
+                    const sectionCoordenadas = getCoordenadaForSection(section.id);
                     return (
                         <AccordionItem value={String(section.id)} key={section.id} className="border-b-0">
                         <Card className="mb-2">

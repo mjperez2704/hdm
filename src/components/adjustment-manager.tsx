@@ -70,13 +70,13 @@ export function AdjustmentManager({
     return almacenes.find((a) => String(a.id) === id)?.secciones || [];
   };
 
-  const getCoordenadasForSection = (id?: string): Coordenada[] => {
+  const getCoordenadaForSection = (id?: string): Coordenada[] => {
     if (!id) return [];
     return coordenadas.filter((c) => String(c.seccion_id) === id);
   };
   
   const availableSections = getSectionsForWarehouse(warehouseId);
-  const availableCoordenadas = getCoordenadasForSection(sectionId);
+  const availableCoordenadas = getCoordenadaForSection(sectionId);
 
   // Simulación de permisos
   const userHasPermission = false; 

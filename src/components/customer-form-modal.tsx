@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import type { Cliente } from "@/lib/types";
 import { saveCustomer } from "@/lib/actions";
-import { customerSchema, type CustomerFormValues } from "@/lib/schemas";
+import { customerSchema, type CustomerFormValues } from "@/lib/schemas_ant";
 
 
 import {

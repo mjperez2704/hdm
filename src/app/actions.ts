@@ -16,7 +16,7 @@ import {
   type ModelFormValues,
   toolSchema,
   type ToolFormValues,
-} from "@/lib/schemas";
+} from "@/lib/schemas_ant";
 import type { Cliente, Herramienta, Producto, MovimientoInventario } from "@/lib/types";
 import { suggestStockLevels } from "@/ai/flows/stock-level-suggestions";
 import { getProductos } from "@/lib/data";
@@ -531,12 +531,12 @@ DB_PORT=${formData.get('DB_PORT') || 3306}
 
   try {
     await writeFile('.env', envContent);
-    
-    // Forzar el reinicio de la aplicación para tomar el nuevo .env. 
+
+    // Forzar el reinicio de la aplicación para tomar el nuevo .env.
     // En un entorno real, esto se manejaría de forma más elegante.
     // Para App Hosting, el próximo despliegue o reinicio tomará el nuevo .env.
     // La revalidación no es suficiente para las variables de entorno.
-    
+
     return {
       success: true,
       message: "¡Configuración guardada! La aplicación utilizará los nuevos ajustes en el próximo reinicio o despliegue.",

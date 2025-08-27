@@ -33,7 +33,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AssignToolModal } from "./assign-tool-modal";
 import { UpdateToolStatusDialog } from "./update-tool-status-dialog";
 import { saveTool, assignTool, updateToolStatus, deleteTool } from "@/lib/actions";
-import type { ToolFormValues } from "@/lib/schemas";
+import type { ToolFormValues } from "@/lib/schemas_ant";
 
 
 type ToolsManagerProps = {
@@ -63,9 +63,23 @@ export function ToolsManager({ initialTools, employees }: ToolsManagerProps) {
     EN_MANTENIMIENTO: "outline",
     DE_BAJA: "destructive",
   };
-  
+
   const handleSaveTool = async (values: ToolFormValues, toolId?: number) => {
-    const result = await saveTool(values, toolId);
+    const result = await saveTool(
+         {
+           id: toolId || 0,
+           sku: values.sku,
+           nombre: values.nombre,
+           descripcion: values.descripcion || null,
+           requiere_calibracion: false,
+           asignada_empleado_id: null,
+           estado: 'DISPONIBLE',
+           created_at: new Date(),
+           updated_at: new Date(),
+           deleted_at: null
+         },
+         toolId
+       );
     if (result.success) {
       toast({ title: "Éxito", description: result.message });
       setModalState({ type: null, data: null });
@@ -73,9 +87,9 @@ export function ToolsManager({ initialTools, employees }: ToolsManagerProps) {
       toast({ variant: "destructive", title: "Error", description: result.message });
     }
   };
-  
+
   const handleAssignTool = async (toolId: number, employeeId: number) => {
-    const result = await assignTool(toolId, employeeId);
+    const result = await assignTool(toolId, employeeId, 'ASIGNADA');
     if (result.success) {
       toast({ title: "Éxito", description: result.message });
       setModalState({ type: null, data: null });
@@ -83,7 +97,7 @@ export function ToolsManager({ initialTools, employees }: ToolsManagerProps) {
       toast({ variant: "destructive", title: "Error", description: result.message });
     }
   };
-  
+
   const handleUpdateStatus = async (toolId: number, newStatus: Herramienta['estado']) => {
      const result = await updateToolStatus(toolId, newStatus);
      if (result.success) {
@@ -180,13 +194,13 @@ export function ToolsManager({ initialTools, employees }: ToolsManagerProps) {
         </CardContent>
       </Card>
 
-      <ToolFormModal 
+      <ToolFormModal
         isOpen={modalState.type === 'ADD' || modalState.type === 'EDIT'}
         onClose={() => setModalState({ type: null, data: null })}
         onSave={handleSaveTool}
         tool={modalState.data}
       />
-      
+
       <AssignToolModal
         isOpen={modalState.type === 'ASSIGN'}
         onClose={() => setModalState({ type: null, data: null })}
@@ -194,7 +208,7 @@ export function ToolsManager({ initialTools, employees }: ToolsManagerProps) {
         tool={modalState.data}
         employees={employees}
       />
-      
+
       <UpdateToolStatusDialog
         isOpen={modalState.type === 'UPDATE_STATUS'}
         onClose={() => setModalState({ type: null, data: null })}

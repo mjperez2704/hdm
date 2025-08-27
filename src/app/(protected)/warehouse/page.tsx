@@ -1,11 +1,11 @@
 
 import { WarehouseManager } from "@/components/warehouse-manager";
-import { getAlmacenes, getCoordenadas } from "@/lib/data";
+import { getAlmacenes, getCoordenada } from "@/lib/data";
 
 export default async function WarehousePage() {
   const warehouseData = await getAlmacenes();
-  const coordenadasData = await getCoordenadas();
+  const coordenadaData = await getCoordenada();
   return (
-    <WarehouseManager initialData={warehouseData} coordenadas={coordenadasData} />
+    <WarehouseManager initialData={warehouseData} coordenadas={coordenadaData} />
   );
 }

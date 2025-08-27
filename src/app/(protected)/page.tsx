@@ -1,9 +1,9 @@
 import { Dashboard } from "@/components/dashboard";
-import { getProductos, getCoordenadas, getAlmacenes } from "@/lib/data";
+import { getProductos, getCoordenada, getAlmacenes } from "@/lib/data";
 
 export default async function HomePage() {
   const inventoryData = await getProductos();
-  const coordenadasData = await getCoordenadas();
+  const coordenadasData = await getCoordenada();
   const almacenesData = await getAlmacenes();
 
   // Calcular el stock total para cada producto

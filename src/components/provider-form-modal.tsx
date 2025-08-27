@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import type { Proveedor } from "@/lib/types";
 import { saveProvider } from "@/lib/actions";
-import { providerSchema, type ProviderFormValues } from "@/lib/schemas";
+import { providerSchema, type ProviderFormValues } from "@/lib/schemas_ant";
 
 import {
   Dialog,

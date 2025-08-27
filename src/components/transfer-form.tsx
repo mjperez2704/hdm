@@ -123,13 +123,13 @@ export function TransferForm({ almacenes, productos, coordenadas }: TransferForm
   }, [originCoordenadaId, productId, transferAll, form, coordenadas]);
 
 
-  const getCoordenadasForWarehouse = (warehouseId: string | undefined) => {
+  const getCoordenadaForWarehouse = (warehouseId: string | undefined) => {
     if (!warehouseId) return [];
     return coordenadas.filter(coordenada => String(coordenada.almacen_id) === warehouseId);
   }
 
-  const originCoordenadas = getCoordenadasForWarehouse(transferType === 'inter-warehouse' ? originWarehouseId : intraWarehouseId);
-  const destinationCoordenadas = getCoordenadasForWarehouse(transferType === 'inter-warehouse' ? destinationWarehouseId : intraWarehouseId);
+  const originCoordenadas = getCoordenadaForWarehouse(transferType === 'inter-warehouse' ? originWarehouseId : intraWarehouseId);
+  const destinationCoordenadas = getCoordenadaForWarehouse(transferType === 'inter-warehouse' ? destinationWarehouseId : intraWarehouseId);
 
   const getProductsInOriginCoordenada = () => {
     if(!originCoordenadaId) return [];

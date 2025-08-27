@@ -134,7 +134,7 @@ export function InventoryVisualizer({ product, allAlmacenes, allCoordenadas }: I
     setTransferQuantity(0);
   }
   
-  const getCoordenadasForSection = (sectionId: number, almacenId: number): Coordenada[] => {
+  const getCoordenadaForSection = (sectionId: number, almacenId: number): Coordenada[] => {
     let coords = allCoordenadas.filter(c => c.seccion_id === sectionId && c.almacen_id === almacenId);
     // Para que se vea más realista, simulamos 1-10 coordenadas aunque no todas tengan stock
     const existingCoordCodes = new Set(coords.map(c => c.codigo_coordenada));
@@ -174,7 +174,7 @@ export function InventoryVisualizer({ product, allAlmacenes, allCoordenadas }: I
             </CardHeader>
             <CardContent className="space-y-3">
               {almacen.secciones?.map((seccion) => {
-                const coordenadasEnSeccion = getCoordenadasForSection(seccion.id, almacen.id);
+                const coordenadasEnSeccion = getCoordenadaForSection(seccion.id, almacen.id);
                 return (
                     <div key={seccion.id} className="p-3 border rounded-md bg-background">
                         <h4 className="font-semibold mb-2">{seccion.nombre}</h4>

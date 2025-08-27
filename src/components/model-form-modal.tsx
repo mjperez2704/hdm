@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import type { Marca, Modelo } from "@/lib/types";
 import { saveModel } from "@/lib/actions";
-import { modelSchema, type ModelFormValues } from "@/lib/schemas";
+import { modelSchema, type ModelFormValues } from "@/lib/schemas_ant";
 
 import {
   Dialog,
@@ -72,7 +72,7 @@ export function ModelFormModal({
         });
         return;
     }
-    
+
     setIsSubmitting(true);
     const result = await saveModel(values, brand.id, model?.id);
     setIsSubmitting(false);

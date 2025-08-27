@@ -1,19 +1,18 @@
-
 "use server";
 
 import {revalidatePath} from "next/cache";
 import {getPool, query} from "@/lib/db";
 import {
-  type BrandFormValues,
-  brandSchema,
-  type CustomerFormValues,
-  customerSchema,
-  type ModelFormValues,
-  modelSchema,
-  type ProviderFormValues,
-  providerSchema,
-  type ToolFormValues,
-  toolSchema,
+  type CatMarcasFormValues,
+  catMarcasSchema,
+  type CliClientesFormValues,
+  cliClientesSchema,
+  type CatModelosFormValues,
+  catModelosSchema,
+  type PrvContactosFormValues,
+  prvContactosSchema,
+  type CatHerramientasFormValues,
+  catHerramientasSchema, prvProveedoresSchema, PrvProveedoresFormValues,
 } from "@/lib/schemas";
 import type {Herramienta, MovimientoInventario} from "@/lib/types";
 import {suggestStockLevels} from "@/ai/flows/stock-level-suggestions";
@@ -30,7 +29,7 @@ type ActionResult = {
 };
 
 export async function getAiSuggestionAction(
-  itemId: string
+    itemId: string
 ): Promise<{ suggestedLevel: number; reasoning: string } | { error: string }> {
   const inventory = await getProductos();
   const item = inventory.find((i) => String(i.id) === itemId);
@@ -58,13 +57,13 @@ export async function getAiSuggestionAction(
   }
 
   const historicalData = itemLogs
-    .map(
-      (log) =>
-        `Fecha: ${new Date(log.fecha).toISOString().split("T")[0]}, Cantidad: ${
-          log.cantidad
-        }, Tipo: ${log.tipo}`
-    )
-    .join("; ");
+      .map(
+          (log) =>
+              `Fecha: ${new Date(log.fecha).toISOString().split("T")[0]}, Cantidad: ${
+                  log.cantidad
+              }, Tipo: ${log.tipo}`
+      )
+      .join("; ");
 
   try {
     return await suggestStockLevels({
@@ -82,11 +81,11 @@ export async function getAiSuggestionAction(
 // CLIENTES
 // --------------------
 export async function saveCustomer(
-  values: CustomerFormValues,
-  customerId?: number
+    values: CliClientesFormValues,
+    customerId?: number
 ): Promise<ActionResult> {
   // 1. Validar en el servidor
-  const validatedFields = customerSchema.safeParse(values);
+  const validatedFields = cliClientesSchema.safeParse(values);
   if (!validatedFields.success) {
     return {
       success: false,
@@ -101,14 +100,14 @@ export async function saveCustomer(
     if (customerId) {
       // 2. Operación de Actualización (UPDATE)
       await query(
-        `UPDATE clientes SET razon_social = ?, rfc = ?, email = ?, telefono = ?, tipo_id = ? WHERE id = ?`,
-        [razon_social, rfc, email, telefono, tipo_id, customerId]
+          `UPDATE cli_clientes SET razon_social = ?, rfc = ?, email = ?, telefono = ?, tipo_id = ? WHERE id = ?`,
+          [razon_social, rfc, email, telefono, tipo_id, customerId]
       );
     } else {
       // 3. Operación de Creación (INSERT)
       await query(
-        `INSERT INTO clientes (razon_social, rfc, email, telefono, tipo_id) VALUES (?, ?, ?, ?, ?)`,
-        [razon_social, rfc, email, telefono, tipo_id]
+          `INSERT INTO cli_clientes (razon_social, rfc, email, telefono, tipo_id) VALUES (?, ?, ?, ?, ?)`,
+          [razon_social, rfc, email, telefono, tipo_id]
       );
     }
 
@@ -118,7 +117,7 @@ export async function saveCustomer(
     return {
       success: true,
       message: `Cliente ${
-        customerId ? "actualizado" : "creado"
+          customerId ? "actualizado" : "creado"
       } correctamente.`,
     };
   } catch (error) {
@@ -136,7 +135,7 @@ export async function deleteCustomer(customerId: number): Promise<ActionResult> 
   }
   try {
     // Usamos un borrado lógico (soft delete)
-    await query(`UPDATE clientes SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?`, [
+    await query(`UPDATE cli_clientes SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?`, [
       customerId,
     ]);
     revalidatePath("/customers");
@@ -154,10 +153,10 @@ export async function deleteCustomer(customerId: number): Promise<ActionResult> 
 // PROVEEDORES
 // --------------------
 export async function saveProvider(
-  values: ProviderFormValues,
-  providerId?: number
+    values: PrvProveedoresFormValues,
+    providerId?: number
 ): Promise<ActionResult> {
-  const validatedFields = providerSchema.safeParse(values);
+  const validatedFields = prvProveedoresSchema.safeParse(values);
   if (!validatedFields.success) {
     return {
       success: false,
@@ -173,49 +172,40 @@ export async function saveProvider(
     telefono,
     dias_credito,
     direccion,
-    persona_contacto,
-    tipo,
-    origen,
   } = validatedFields.data;
 
   try {
     if (providerId) {
       await query(
-        `UPDATE proveedores SET razon_social = ?, rfc = ?, email = ?, telefono = ?, dias_credito = ?, direccion = ?, persona_contacto = ?, tipo = ?, origen = ? WHERE id = ?`,
-        [
-          razon_social,
-          rfc,
-          email,
-          telefono,
-          dias_credito,
-          direccion,
-          persona_contacto,
-          tipo,
-          origen,
-          providerId,
-        ]
+          `UPDATE prv_proveedores SET razon_social = ?, rfc = ?, email = ?, telefono = ?, dias_credito = ?, direccion = ? WHERE id = ?`,
+          [
+            razon_social,
+            rfc,
+            email,
+            telefono,
+            dias_credito,
+            direccion,
+            providerId,
+          ]
       );
     } else {
       await query(
-        `INSERT INTO proveedores (razon_social, rfc, email, telefono, dias_credito, direccion, persona_contacto, tipo, origen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          razon_social,
-          rfc,
-          email,
-          telefono,
-          dias_credito,
-          direccion,
-          persona_contacto,
-          tipo,
-          origen,
-        ]
+          `INSERT INTO prv_proveedores (razon_social, rfc, email, telefono, dias_credito, direccion) VALUES (?, ?, ?, ?, ?, ?)`,
+          [
+            razon_social,
+            rfc,
+            email,
+            telefono,
+            dias_credito,
+            direccion,
+          ]
       );
     }
     revalidatePath("/providers");
     return {
       success: true,
       message: `Proveedor ${
-        providerId ? "actualizado" : "creado"
+          providerId ? "actualizado" : "creado"
       } correctamente.`,
     };
   } catch (error) {
@@ -232,7 +222,7 @@ export async function deleteProvider(providerId: number): Promise<ActionResult> 
     return { success: false, message: "ID de proveedor inválido." };
   }
   try {
-    await query(`UPDATE proveedores SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?`, [
+    await query(`UPDATE prv_proveedores SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?`, [
       providerId,
     ]);
     revalidatePath("/providers");
@@ -249,11 +239,11 @@ export async function deleteProvider(providerId: number): Promise<ActionResult> 
 // --------------------
 // MARCAS Y MODELOS
 // --------------------
-export async function saveBrand(
-  values: BrandFormValues,
-  brandId?: number
+export async function saveMarcas(
+    values: CatMarcasFormValues,
+    brandId?: number
 ): Promise<ActionResult> {
-  const validatedFields = brandSchema.safeParse(values);
+  const validatedFields = catMarcasSchema.safeParse(values);
   if (!validatedFields.success) {
     return {
       success: false,
@@ -265,13 +255,13 @@ export async function saveBrand(
 
   try {
     if (brandId) {
-      await query(`UPDATE marcas SET nombre = ?, pais_origen = ? WHERE id = ?`, [
+      await query(`UPDATE cat_marcas SET nombre = ?, pais_origen = ? WHERE id = ?`, [
         nombre,
         pais_origen,
         brandId,
       ]);
     } else {
-      await query(`INSERT INTO marcas (nombre, pais_origen) VALUES (?, ?)`, [
+      await query(`INSERT INTO cat_marcas (nombre, pais_origen) VALUES (?, ?)`, [
         nombre,
         pais_origen,
       ]);
@@ -293,10 +283,7 @@ export async function saveBrand(
 export async function deleteBrand(brandId: number): Promise<ActionResult> {
   if (!brandId) return { success: false, message: "ID de marca inválido." };
   try {
-    // En este caso, hacemos borrado físico, asumiendo que si se borra una marca, se borran sus modelos.
-    // Se podría implementar borrado lógico si se prefiere.
-    await query(`DELETE FROM modelos WHERE marca_id = ?`, [brandId]);
-    await query(`DELETE FROM marcas WHERE id = ?`, [brandId]);
+    await query(`UPDATE cat_marcas SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?`, [brandId]);
     revalidatePath("/catalogs/brands");
     return { success: true, message: "Marca eliminada correctamente." };
   } catch (error) {
@@ -309,11 +296,11 @@ export async function deleteBrand(brandId: number): Promise<ActionResult> {
 }
 
 export async function saveModel(
-  values: ModelFormValues,
-  brandId: number,
-  modelId?: number
+    values: CatModelosFormValues,
+    brandId: number,
+    modelId?: number
 ): Promise<ActionResult> {
-  const validatedFields = modelSchema.safeParse(values);
+  const validatedFields = catModelosSchema.safeParse(values);
   if (!validatedFields.success) {
     return {
       success: false,
@@ -325,15 +312,15 @@ export async function saveModel(
 
   try {
     if (modelId) {
-      await query(`UPDATE modelos SET nombre = ?, anio = ? WHERE id = ?`, [
+      await query(`UPDATE cat_modelos SET nombre = ?, anio = ? WHERE id = ?`, [
         nombre,
         anio,
         modelId,
       ]);
     } else {
       await query(
-        `INSERT INTO modelos (nombre, anio, marca_id) VALUES (?, ?, ?)`,
-        [nombre, anio, brandId]
+          `INSERT INTO cat_modelos (nombre, anio, marca_id) VALUES (?, ?, ?)`,
+          [nombre, anio, brandId]
       );
     }
     revalidatePath("/catalogs/brands");
@@ -353,7 +340,7 @@ export async function saveModel(
 export async function deleteModel(modelId: number): Promise<ActionResult> {
   if (!modelId) return { success: false, message: "ID de modelo inválido." };
   try {
-    await query(`DELETE FROM modelos WHERE id = ?`, [modelId]);
+    await query(`UPDATE cat_modelos SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?`, [modelId]);
     revalidatePath("/catalogs/brands");
     return { success: true, message: "Modelo eliminado correctamente." };
   } catch (error) {
@@ -369,10 +356,10 @@ export async function deleteModel(modelId: number): Promise<ActionResult> {
 // HERRAMIENTAS
 // --------------------
 export async function saveTool(
-  values: ToolFormValues,
-  toolId?: number
+    values: CatHerramientasFormValues,
+    toolId?: number
 ): Promise<ActionResult> {
-  const validatedFields = toolSchema.safeParse(values);
+  const validatedFields =catHerramientasSchema.safeParse(values);
   if (!validatedFields.success) {
     return {
       success: false,
@@ -381,36 +368,26 @@ export async function saveTool(
     };
   }
   const {
-    sku,
+    id,
     nombre,
     descripcion,
-    marca,
-    modelo,
-    numero_serie,
-    fecha_compra,
-    costo,
   } = validatedFields.data;
 
   try {
     const params = [
-      sku,
+      id,
       nombre,
       descripcion,
-      marca,
-      modelo,
-      numero_serie,
-      fecha_compra,
-      costo,
     ];
     if (toolId) {
       await query(
-        `UPDATE herramientas SET sku = ?, nombre = ?, descripcion = ?, marca = ?, modelo = ?, numero_serie = ?, fecha_compra = ?, costo = ? WHERE id = ?`,
-        [...params, toolId]
+          `UPDATE cat_herramientas SET id = ?, nombre = ?, descripcion = ? WHERE id = ?`,
+          [...params, toolId]
       );
     } else {
       await query(
-        `INSERT INTO herramientas (sku, nombre, descripcion, marca, modelo, numero_serie, fecha_compra, costo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        params
+          `INSERT INTO cat_herramientas (id, nombre, descripcion) VALUES (?, ?, ?)`,
+          params
       );
     }
     revalidatePath("/catalogs/tools");
@@ -427,13 +404,33 @@ export async function saveTool(
   }
 }
 
+export async function deleteTool(toolId: number): Promise<ActionResult> {
+  if (!toolId)
+    return { success: false, message: "ID de herramienta inválido." };
+  try {
+    // Borrado lógico
+    await query(
+        `UPDATE cat_herramientas SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?`,
+        [toolId]
+    );
+    revalidatePath("/catalogs/tools");
+    return { success: true, message: "Herramienta eliminada correctamente." };
+  } catch (error) {
+    console.error("Error al eliminar la herramienta:", error);
+    return { success: false, message: "Error en la base de datos." };
+  }
+}
+
 export async function assignTool(
-  toolId: number,
-  employeeId: number
-): Promise<ActionResult> {
+    toolId: number,
+    employeeId: number
+    , asignada: string): Promise<ActionResult> {
+  if (!toolId || !employeeId) {
+    return { success: false, message: "ID de herramienta o empleado inválido." };
+  }
   try {
     await query(
-      `UPDATE herramientas SET asignada_a_empleado_id = ?, estado = 'ASIGNADA' WHERE id = ?`,
+      `UPDATE cat_herramientas SET asignada_empleado_id = ?, estado = 'ASIGNADA' WHERE id = ?`,
       [employeeId, toolId]
     );
     revalidatePath("/catalogs/tools");
@@ -452,42 +449,28 @@ export async function updateToolStatus(
   newStatus: Herramienta["estado"]
 ): Promise<ActionResult> {
   try {
-    // Si el nuevo estado es DISPONIBLE, desasignamos al empleado.
-    const employeeId = newStatus === "DISPONIBLE" ? null : undefined;
-    let queryString = `UPDATE herramientas SET estado = ?`;
-    const params: (string | number | null)[] = [newStatus];
+    // Base de la consulta
+    let queryString = `UPDATE cat_herramientas SET estado = ?`;
 
-    if (employeeId === null) {
-      queryString += `, asignada_a_empleado_id = ?`;
-      params.push(employeeId);
+    // Si el nuevo estado implica que la herramienta ya no está en posesión de un técnico
+    // (e.g., DISPONIBLE, EN_MANTENIMIENTO), la desasignamos.
+    // La única acción que asigna un empleado es `assignTool`.
+    if (newStatus !== "ASIGNADA") {
+      queryString += `, asignada_a_empleado_id = NULL`;
     }
-    queryString += ` WHERE id = ?`;
-    params.push(toolId);
 
-    await query(queryString, params);
+    queryString += ` WHERE id = ?`;
+
+    await query(queryString, [newStatus, toolId]);
 
     revalidatePath("/catalogs/tools");
     return { success: true, message: "Estado de la herramienta actualizado." };
   } catch (error) {
     console.error("Error al actualizar estado de la herramienta:", error);
-    return { success: false, message: "Error en la base de datos." };
-  }
-}
-
-export async function deleteTool(toolId: number): Promise<ActionResult> {
-  if (!toolId)
-    return { success: false, message: "ID de herramienta inválido." };
-  try {
-    // Borrado lógico
-    await query(
-      `UPDATE herramientas SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?`,
-      [toolId]
-    );
-    revalidatePath("/catalogs/tools");
-    return { success: true, message: "Herramienta eliminada correctamente." };
-  } catch (error) {
-    console.error("Error al eliminar la herramienta:", error);
-    return { success: false, message: "Error en la base de datos." };
+    return {
+      success: false,
+      message: "Error en la base de datos. No se pudo actualizar el estado.",
+    };
   }
 }
 
@@ -507,9 +490,9 @@ export async function testDatabaseConnection(): Promise<ActionResult> {
     console.error("Error en la prueba de conexión:", error);
     let message = `Falló la conexión: ${error.message}`;
     if (error.code === 'ETIMEDOUT') {
-        message = 'Falló la conexión: El tiempo de espera se agotó. Verifica la red y las variables de entorno.';
+      message = 'Falló la conexión: El tiempo de espera se agotó. Verifica la red y las variables de entorno.';
     } else if (error.code === 'ER_ACCESS_DENIED_ERROR') {
-        message = 'Falló la conexión: Usuario o contraseña incorrectos.';
+      message = 'Falló la conexión: Usuario o contraseña incorrectos.';
     }
     return { success: false, message };
   } finally {
@@ -529,13 +512,12 @@ export async function saveDatabaseSettings(): Promise<ActionResult> {
     return {
       success: true,
       message:
-        "¡Conexión exitosa! La aplicación está usando la configuración definida en el entorno del servidor.",
+          "¡Conexión exitosa! La aplicación está usando la configuración definida en el entorno del servidor.",
     };
   } else {
-     return {
+    return {
       success: false,
       message: `La prueba de conexión falló: ${testResult.message}`,
     };
   }
 }
-

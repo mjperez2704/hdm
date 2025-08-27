@@ -110,7 +110,7 @@ export function ReceptionModal({ isOpen, onClose, purchase, almacenes, coordenad
     onClose();
   }
   
-  const getCoordenadasForWarehouse = (warehouseId?: string) => {
+  const getCoordenadaForWarehouse = (warehouseId?: string) => {
     if(!warehouseId) return [];
     return coordenadas.filter(coordenada => String(coordenada.almacen_id) === warehouseId);
   }
@@ -139,7 +139,7 @@ export function ReceptionModal({ isOpen, onClose, purchase, almacenes, coordenad
             </TableHeader>
             <TableBody>
                 {receptionItems.map(item => {
-                    const availableCoordenadas = getCoordenadasForWarehouse(item.warehouseId);
+                    const availableCoordenadas = getCoordenadaForWarehouse(item.warehouseId);
                     return (
                     <TableRow key={item.name}>
                         <TableCell className="font-medium">{item.name}</TableCell>

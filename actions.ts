@@ -15,7 +15,7 @@ import {
   type ModelFormValues,
   toolSchema,
   type ToolFormValues,
-} from "@/lib/schemas";
+} from "@/lib/schemas_ant";
 import type { Cliente, Herramienta, Producto, MovimientoInventario } from "@/lib/types";
 import { suggestStockLevels } from "@/ai/flows/stock-level-suggestions";
 import { getProductos } from "@/lib/data";

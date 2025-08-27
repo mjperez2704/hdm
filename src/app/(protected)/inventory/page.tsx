@@ -1,6 +1,6 @@
 
 import { Dashboard } from "@/components/dashboard";
-import { getProductos, getCoordenadas, getAlmacenes, getVentas, getGastos, getClientes, getOrdenesServicio, getMarcas } from "@/lib/data";
+import { getProductos, getCoordenada, getAlmacenes, getVentas, getGastos, getClientes, getOrdenesServicio, getMarcas } from "@/lib/data";
 import type { ProductoConStock } from "@/lib/types";
 
 export default async function InventoryPage() {
@@ -15,7 +15,7 @@ export default async function InventoryPage() {
     marcas
   ] = await Promise.all([
     getProductos(),
-    getCoordenadas(),
+    getCoordenada(),
     getAlmacenes(),
     getVentas(),
     getGastos(),

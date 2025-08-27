@@ -1,5 +1,5 @@
 import { Dashboard } from "@/components/dashboard";
-import { getVentas, getGastos, getClientes, getProductos, getCoordenadas, getOrdenesServicio, getMarcas } from "@/lib/data";
+import { getVentas, getGastos, getClientes, getProductos, getCoordenada, getOrdenesServicio, getMarcas } from "@/lib/data";
 import type { ProductoConStock } from "@/lib/types";
 
 export default async function DashboardPage() {
@@ -7,7 +7,7 @@ export default async function DashboardPage() {
   const gastos = await getGastos();
   const clientes = await getClientes();
   const productos = await getProductos();
-  const coordenadas = await getCoordenadas();
+  const coordenadas = await getCoordenada();
   const ordenesServicio = await getOrdenesServicio();
   const marcas = await getMarcas();
 
